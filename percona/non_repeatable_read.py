@@ -43,6 +43,7 @@ def non_repeatable_read():
     cursor1.execute("SELECT value FROM test_table WHERE id = 1")
     new_value = cursor1.fetchone()[0]
     print(f"Session 1: Value After Update (Used to be: 10, Received: {new_value})")
+    cursor1.execute("COMMIT")
 
     connection1.close()
     connection2.close()

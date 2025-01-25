@@ -18,6 +18,10 @@ def non_repeatable_read():
     connection1 = psycopg2.connect(
         host="localhost", database="testdb", user="testuser", password="testpassword"
     )
+    connection2 = psycopg2.connect(
+        host="localhost", database="testdb", user="testuser", password="testpassword"
+    )
+    
     cursor1 = connection1.cursor()
     cursor1.execute("BEGIN TRANSACTION") #  ISOLATION LEVEL READ COMMITTED is default
 
@@ -27,15 +31,12 @@ def non_repeatable_read():
     print(f"Session 1: Initial Value (Expected: 10, Received: {initial_value})")
 
     # Session 2 modifies the value in parallel
-    connection2 = psycopg2.connect(
-        host="localhost", database="testdb", user="testuser", password="testpassword"
-    )
+
     cursor2 = connection2.cursor()
     cursor2.execute("BEGIN TRANSACTION") #  ISOLATION LEVEL READ COMMITTED is default
     cursor2.execute("UPDATE test_table SET value = 50 WHERE id = 1")
     print("Session 2: Updated value to 50.")
     cursor2.execute("COMMIT")
-    connection2.close()
 
     # Second read (Non-repeatable read)
     cursor1.execute("SELECT value FROM test_table WHERE id = 1")
@@ -44,7 +45,10 @@ def non_repeatable_read():
 
     # Commit session 1
     cursor1.execute("COMMIT")
+
     connection1.close()
+    connection2.close()
+
 
 clean_up()
 non_repeatable_read()
