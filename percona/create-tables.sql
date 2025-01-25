@@ -1,0 +1,14 @@
+CREATE DATABASE IF NOT EXISTS testdb;
+
+USE testdb;
+
+CREATE TABLE IF NOT EXISTS test_table (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    value INT NOT NULL
+) ENGINE=InnoDB;
+
+INSERT INTO test_table (value) VALUES (10);
+
+CREATE USER IF NOT EXISTS 'testuser'@'%' IDENTIFIED BY 'testpassword';
+GRANT ALL PRIVILEGES ON testdb.* TO 'testuser'@'%';
+FLUSH PRIVILEGES;
