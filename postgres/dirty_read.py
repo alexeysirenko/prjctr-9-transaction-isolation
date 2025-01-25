@@ -18,7 +18,7 @@ def session1_dirty_read():
         host="localhost", database="testdb", user="testuser", password="testpassword"
     )
     cursor = connection.cursor()
-    cursor.execute("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
+    cursor.execute("BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
     cursor.execute("UPDATE test_table SET value = 20 WHERE id = 1")  # Ensures id=1 exists
     input("Session 1: Press Enter to ROLLBACK...")
     cursor.execute("ROLLBACK")
@@ -29,7 +29,7 @@ def session2_dirty_read():
         host="localhost", database="testdb", user="testuser", password="testpassword"
     )
     cursor = connection.cursor()
-    cursor.execute("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
+    cursor.execute("BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
     cursor.execute("SELECT value FROM test_table WHERE id = 1")
     result = cursor.fetchone()
     received_value = result[0]
